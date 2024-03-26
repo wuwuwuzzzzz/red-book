@@ -1,0 +1,53 @@
+@mixin flexac {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+@mixin flexbc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flexcc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flexlr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flexxl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes refreshAni {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
+}
+
+@mixin flexl {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
