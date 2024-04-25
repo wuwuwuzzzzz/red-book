@@ -63,7 +63,7 @@ watch(() => isOpenDetail.value, (newVal, oldVal) => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .card-content {
   width: 50vw;
   height: auto;

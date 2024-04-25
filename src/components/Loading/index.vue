@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .loading {
   @include flexcc;
   height: 3.125rem;

@@ -211,7 +211,7 @@ onMounted(() => {
   </LoadPannel>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .refresh-div {
   height: 0;
   width: 100%;

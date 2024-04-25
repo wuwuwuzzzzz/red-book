@@ -1,7 +1,8 @@
 <script setup>
-import { nextTick, ref, toRefs, watch } from 'vue';
+import { onMounted, ref, toRefs } from 'vue';
 import useHooks from '@/hooks/useHooks.js';
 import CardDetail from '@/components/CardDetail/index.vue'
+import VideoDetail from '@/components/VideoDetail/index.vue'
 
 const { popPara, isOpenDetail } = toRefs(useHooks.state)
 const { changeOpenStatus } = useHooks
@@ -12,44 +13,109 @@ const cardFrameRef = ref(null)
 const cardDetailRef = ref(null)
 
 let scaleRate = 1
-watch(() => isOpenDetail.value, (newVal, oldVal) => {
-  if (newVal) {
-    nextTick(() => {
-      scaleRate = popPara.value.imgW / document.body.clientWidth
-      // small pos
-      cardSmallRef.value.style.top = `${ popPara.value.y }px`
-      cardSmallRef.value.style.left = `${ popPara.value.x }px`
-      cardSmallRef.value.style.width = `${ popPara.value.width }px`
-      cardSmallRef.value.style.height = `${ popPara.value.height }px`
+let moveFlag = false
+let outFlag = false
+let moveAllFlag = ref(false)
 
-      // big pos
-      cardFrameRef.value.style.top = `${ popPara.value.y }px`
-      cardFrameRef.value.style.left = `${ popPara.value.x }px`
-      cardFrameRef.value.style.height = `${ popPara.value.height / scaleRate }px`
-      cardFrameRef.value.style.transform = `scale(${ scaleRate })`
+onMounted(() => {
+  // 打开动画
+  scaleRate = popPara.value.imgW / document.body.clientWidth
+  // small pos
+  cardSmallRef.value.style.top = `${ popPara.value.y }px`
+  cardSmallRef.value.style.left = `${ popPara.value.x }px`
+  cardSmallRef.value.style.width = `${ popPara.value.width }px`
+  cardSmallRef.value.style.height = `${ popPara.value.height }px`
 
-      setTimeout(() => {
-        popCardRef.value.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+  // big pos
+  cardFrameRef.value.style.top = `${ popPara.value.y }px`
+  cardFrameRef.value.style.left = `${ popPara.value.x }px`
+  cardFrameRef.value.style.height = `${ popPara.value.height / scaleRate }px`
+  cardFrameRef.value.style.transform = `scale(${ scaleRate })`
 
-        // small
-        let sh = 100 / (1 / scaleRate)
-        cardSmallRef.value.style.opacity = 0
-        cardSmallRef.value.style.left = 0
-        cardSmallRef.value.style.top = 0
-        cardSmallRef.value.style.transform = `scale(${ 1 / scaleRate })`
-        cardSmallRef.value.style.height = `${sh}vh`
+  setTimeout(() => {
+    popCardRef.value.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
 
-        // big
-        cardFrameRef.value.style.transition = 'all .3s linear'
-        cardFrameRef.value.style.transform = 'scale(1)'
-        cardFrameRef.value.style.borderRadius = '0px'
-        cardFrameRef.value.style.height = `${document.body.clientHeight}px`
-        cardFrameRef.value.classList.add('frame-style')
-      }, 0)
-    })
-  }
-}, {
-  immediate: true
+    // small
+    let sh = 100 / (1 / scaleRate)
+    cardSmallRef.value.style.opacity = 0
+    cardSmallRef.value.style.left = 0
+    cardSmallRef.value.style.top = 0
+    cardSmallRef.value.style.transform = `scale(${ 1 / scaleRate })`
+    cardSmallRef.value.style.height = `${ sh }vh`
+
+    // big
+    cardFrameRef.value.style.transition = 'all .3s linear'
+    cardFrameRef.value.style.transform = 'scale(1)'
+    cardFrameRef.value.style.borderRadius = '0px'
+    cardFrameRef.value.style.height = `${ document.body.clientHeight }px`
+    cardFrameRef.value.classList.add('frame-style')
+  }, 0)
+
+  // 拖拽关闭监听
+  let startX = 0, startY = 0, endX = 0, endY = 0, X = 0, Y = 0;
+
+  cardFrameRef.value.addEventListener('touchstart', function(e) {
+    outFlag = false
+    moveFlag = false
+    moveAllFlag.value = false
+
+    startY = e.touches[0].pageY
+    startX = e.touches[0].pageX
+
+    if (e.target.classList.contains('card-source')) {
+      if (popPara.value.info.imageUrl.length > 1) {
+        if (cardDetailRef.value.aIndex === 0) {
+          outFlag = true
+        }
+      } else {
+        outFlag = true
+      }
+    } else {
+      outFlag = true
+    }
+  })
+
+  cardFrameRef.value.addEventListener('touchmove', function(e) {
+    endX = e.changedTouches[0].pageX
+    endY = e.changedTouches[0].pageY
+    X = endX - startY
+    Y = endY - startY
+
+    if (outFlag) {
+      if (!moveAllFlag.value) {
+        if (Math.abs(X) > Math.abs(Y) && X > 0) {
+          moveFlag = true
+          moveAllFlag.value = true
+        }
+      }
+    }
+
+    if (moveAllFlag.value) {
+      cardFrameRef.value.style.transition = 'all .1s linear'
+      cardFrameRef.value.style.borderRadius = '8px'
+      cardFrameRef.value.style.backgroundColor = 'rgba(0, 0, 0, 0.3)'
+      let scaleRateX = 1 - Math.abs(X / document.body.clientWidth)
+      scaleRateX = scaleRateX < 0.8 ? 0.8 : scaleRateX
+      cardFrameRef.value.style.transform = `translate(${X}px, ${Y}px) scale(${scaleRateX})`
+    }
+  })
+
+  cardFrameRef.value.addEventListener('touchend', function(e) {
+    if (outFlag) {
+      if (Math.abs(X) < 50) {
+        popCardRef.value.style.backgroundColor = `rgba(0, 0, 0, 0.5)`
+        popCardRef.value.style.transform = ''
+        popCardRef.value.style.top = 0
+        popCardRef.value.style.left = 0
+        popCardRef.value.style.borderRadius = 0
+      } else {
+        if (moveAllFlag.value) {
+          goBack()
+          cardFrameRef.value.style.transition = 'all .3s linear'
+        }
+      }
+    }
+  })
 })
 
 // 返回首页
@@ -71,9 +137,9 @@ const goBack = () => {
   cardFrameRef.value.style.opacity = 0
   cardFrameRef.value.style.borderRadius = '8px'
 
-  cardDetailRef.value.cardContentRef.scrollTop = 0
-  cardDetailRef.value.cardContentRef.style.height = `${popPara.value.height / scaleRate}px`
-  cardDetailRef.value.cardBottomRef.classList.remove('bottom-style')
+  if (popPara.value.info.isVideo == false) {
+    cardDetailRef.value.initPage()
+  }
 
   setTimeout(() => {
     changeOpenStatus(false)
@@ -114,12 +180,13 @@ const goBack = () => {
     </div>
     <!-- 详情 -->
     <div class="card-detail-frame" ref="cardFrameRef">
-      <CardDetail ref="cardDetailRef" @go-back="goBack" />
+      <CardDetail ref="cardDetailRef" v-if="popPara.info.isVideo == false" @go-back="goBack" :swiperLock="moveAllFlag" />
+      <VideoDetail ref="videoDetailRef" v-else @go-back="goBack" />
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .popCard {
   position: absolute;
   top: 0;

@@ -40,7 +40,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .load-pannel {
   overflow: auto;
   width: 100%;

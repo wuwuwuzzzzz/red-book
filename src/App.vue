@@ -17,6 +17,6 @@ const { isOpenDetail } = toRefs(useHooks.state)
   <DetailPannel v-if="isOpenDetail" />
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 </style>

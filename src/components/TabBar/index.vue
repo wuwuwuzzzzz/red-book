@@ -34,7 +34,7 @@ watch(router.currentRoute.value.path, () => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .tab-bar {
   position: absolute;
   bottom: 0;

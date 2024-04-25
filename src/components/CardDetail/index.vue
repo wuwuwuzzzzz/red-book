@@ -20,11 +20,16 @@ const onSlideChange = ({ activeIndex }) => {
   aIndex.value = activeIndex
 }
 
-// 返回首页
-const goBack = () => {
+const initPage = () => {
   mySwiper?.slideTo(0, 0)
   initSlide.value = 0
   aIndex.value = 0
+  cardContentRef.value.scrollTop = 0
+  cardBottomRef.value.classList.remove('bottom-style')
+}
+
+// 返回首页
+const goBack = () => {
   emits('goBack')
 }
 
@@ -33,8 +38,8 @@ const cardBottomRef = ref(null)
 const cardSwiperRef = ref(null)
 
 defineExpose({
-  cardContentRef,
-  cardBottomRef
+  aIndex,
+  initPage
 })
 
 onMounted(() => {
@@ -71,7 +76,7 @@ onMounted(() => {
     <div class="card-content" ref="cardContentRef">
       <div class="card-swiper" ref="cardSwiperRef">
         <swiper v-if="popPara.info.imageUrl.length > 1 && isOpenDetail" class="img-swiper" @swiper="onSwiper" @slideChange="onSlideChange"
-                :initial-slide="initSlide">
+                :initial-slide="initSlide" :class="{'swiper-no-swiping': swiperLock}">
           <swiper-slide v-for="(item, index) in popPara.info.imageUrl" :key="index">
             <div class="card-source" :style="{ 'background-image': 'url(' + item + ')' }"></div>
           </swiper-slide>
@@ -156,7 +161,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .card-detail {
   height: 100%;
   width: 100%;
