@@ -40,7 +40,7 @@ const goBack = () => {
           <div class="video-content">
             <video class="video-source" :src="popPara.info.video"></video>
             <div class="video-controls">
-              <i class="iconfont icon-aite"></i>
+              <i class="iconfont icon-bofang"></i>
             </div>
           </div>
 
@@ -58,7 +58,7 @@ const goBack = () => {
                 <div class="video-info-describe" v-html="popPara.info.content ? popPara.info.content.replaceAll('<br/>', '') : popPara.info.title"></div>
               </div>
               <div class="video-info-icon">
-                <i class="iconfont icon-aite"></i>
+                <i class="iconfont icon-zhankai"></i>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@ const goBack = () => {
 
         <div class="card-bottom" ref="cardBottomRef">
           <div class="card-saysth">
-            <i class="iconfont icon-input"></i>
+            <i class="iconfont icon-danmu"></i>
             <p>发弹幕</p>
           </div>
           <div class="card-sanlian">
@@ -215,7 +215,7 @@ const goBack = () => {
           @include flexcc;
 
           i {
-            font-size: 0.75rem;
+            font-size: 1rem;
             color: rgb(220, 237, 255);
           }
         }

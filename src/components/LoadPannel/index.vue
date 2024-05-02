@@ -35,7 +35,7 @@ onMounted(() => {
   <div class="load-pannel" ref="pannelRef">
     <div class="outer">
       <slot></slot>
-      <Loading v-show="isBottomLoading" />
+      <Loading />
     </div>
   </div>
 </template>
